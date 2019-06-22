@@ -51,12 +51,18 @@ size_and_count = { 17: 10, 22: 10,
           27: 18, 32: 6, 37: 8, 42: 10, 47: 5, 52: 3, 57: 4 }
 ```
 
+
+```python
+import numpy as np
+```
+
 Following the approach seen in the previous lesson, calculate the PMG by normalizing each size. 
 
 
 ```python
-sizes = None
-pmf = None
+sizes = list(size_and_count.keys())
+counts = sum(list(size_and_count.values()))
+pmf = list(np.array(list(size_and_count.values())) / counts)
 sizes, pmf
 
 # ([17, 22, 27, 32, 37, 42, 47, 52, 57],
@@ -67,7 +73,15 @@ sizes, pmf
 
 
     ([17, 22, 27, 32, 37, 42, 47, 52, 57],
-     [0.135, 0.135, 0.243, 0.081, 0.108, 0.135, 0.068, 0.041, 0.054])
+     [0.13513513513513514,
+      0.13513513513513514,
+      0.24324324324324326,
+      0.08108108108108109,
+      0.10810810810810811,
+      0.13513513513513514,
+      0.06756756756756757,
+      0.04054054054054054,
+      0.05405405405405406])
 
 
 
@@ -76,7 +90,7 @@ As an additional check, these probability values must sum to 1. Let's check for 
 
 ```python
 # Uncomment the line below, the output should be 1
-#np.array(pmf).sum()
+np.array(pmf).sum()
 ```
 
 
@@ -99,7 +113,7 @@ In simple terms, you have to multiply each element in the sizes list to their pr
 
 ```python
 # Calculate the expected value (mu) using formula above
-mu = None
+mu = np.sum(np.multiply(np.array(sizes) , np.array(pmf)))
 
 mu 
 
@@ -109,7 +123,19 @@ mu
 
 
 
-    32.49000000000001
+    32.472972972972975
+
+
+
+
+```python
+sum([a*b for a,b in zip(sizes, pmf)])
+```
+
+
+
+
+    32.47297297297298
 
 
 
@@ -121,7 +147,26 @@ So according to the campus manager, the average class size is 27. This makes a l
 ```
 
 
-![png](index_files/index_9_0.png)
+![png](index_files/index_11_0.png)
+
+
+
+```python
+import matplotlib.pyplot as plt
+%matplotlib inline
+plt.style.use('ggplot')
+plt.stem(sizes, pmf)
+```
+
+
+
+
+    <StemContainer object of 3 artists>
+
+
+
+
+![png](index_files/index_12_1.png)
 
 
 ## Random Student Survey
@@ -137,12 +182,18 @@ The result is a new PMF that represents the biased distribution.
 
 
 ```python
-biased = []
+sizes = np.array(sizes)
+pmf = np.array(pmf)
+```
 
 
-biased_sum = None
+```python
+biased = sizes * pmf
 
-biased, biased_sum
+
+biased_sum = sum(biased)
+
+biased, biased_sum, pmf
 
 # ([2.295, 2.97, 6.561, 2.592, 3.996, 5.67, 3.196, 2.132, 3.078], 32.49)
 ```
@@ -150,7 +201,11 @@ biased, biased_sum
 
 
 
-    ([2.295, 2.97, 6.561, 2.592, 3.996, 5.67, 3.196, 2.132, 3.078], 32.49)
+    (array([2.2972973 , 2.97297297, 6.56756757, 2.59459459, 4.        ,
+            5.67567568, 3.17567568, 2.10810811, 3.08108108]),
+     32.47297297297298,
+     array([0.13513514, 0.13513514, 0.24324324, 0.08108108, 0.10810811,
+            0.13513514, 0.06756757, 0.04054054, 0.05405405]))
 
 
 
@@ -159,7 +214,7 @@ You can now normalize the new biased list with the sum of its values, just like 
 
 
 ```python
-pmf2 = []
+pmf2 = np.array( biased / biased_sum )
 
     
 sizes, pmf2
@@ -171,8 +226,9 @@ sizes, pmf2
 
 
 
-    ([17, 22, 27, 32, 37, 42, 47, 52, 57],
-     [0.071, 0.091, 0.202, 0.08, 0.123, 0.175, 0.098, 0.066, 0.095])
+    (array([17, 22, 27, 32, 37, 42, 47, 52, 57]),
+     array([0.0707449 , 0.09155223, 0.20224719, 0.07990012, 0.12317936,
+            0.17478152, 0.09779442, 0.06491885, 0.0948814 ]))
 
 
 
@@ -180,7 +236,7 @@ You can see that probabilities values in this PMF are different than our origina
 
 
 ```python
-mu_biased = None
+mu_biased = np.sum( sizes * pmf2)
 
 mu_biased
 # 36.577000000000005
@@ -189,7 +245,7 @@ mu_biased
 
 
 
-    36.577000000000005
+    36.5131086142322
 
 
 
@@ -204,10 +260,36 @@ Here we see it, the average or expected value of biased results comes out much h
 ```python
 # Plot pmfs side by side
 
+
 ```
 
 
-![png](index_files/index_17_0.png)
+![png](index_files/index_21_0.png)
+
+
+
+```python
+fig = plt.figure(figsize=[14,5])
+ax1 = fig.add_subplot(121)
+ax2 = fig.add_subplot(122)
+
+ax1.bar(sizes, pmf)
+ax1.set_title("Probability Mass Function - Actual")
+ax2.bar(sizes, pmf2, color='yellow')
+ax2.set_title("Probability Mass Function - Expected")
+plt.ylim(0, 0.25)
+plt.show
+```
+
+
+
+
+    <function matplotlib.pyplot.show(*args, **kw)>
+
+
+
+
+![png](index_files/index_22_1.png)
 
 
 Your results tell you that in the biased distribution there are fewer small classes and more large classes. 
@@ -219,11 +301,21 @@ To to an even more direct comparison, plot these pmfs on top of each other and c
 
 ```python
 # Plot pmfs overlapping
-
+p1 = plt.stem(sizes, pmf, '-', 'go', 'r-', label= 'Actual')
+p2 = plt.stem(sizes, pmf2, '-', 'ro', 'r-', label= 'Observed')
+plt.legend((p1[0], p2[0]), ('Actual', 'Expected'))
+plt.show
 ```
 
 
-![png](index_files/index_19_0.png)
+
+
+    <function matplotlib.pyplot.show(*args, **kw)>
+
+
+
+
+![png](index_files/index_24_1.png)
 
 
 Here is the key. For smaller class sizes, the probability of coming across a students is lower than the actual probability. For larger classes, the probability of coming across a student is much higher than actual probability. This explains why the paradox takes place!
