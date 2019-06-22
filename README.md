@@ -114,8 +114,8 @@ In simple terms, you have to multiply each element in the sizes list to their pr
 ```python
 # Calculate the expected value (mu) using formula above
 mu = np.sum(np.multiply(np.array(sizes) , np.array(pmf)))
-
-mu 
+pmf2 = np.multiply(np.array(sizes) , np.array(pmf))
+mu , pmf2
 
 # 32.49000000000001
 ```
@@ -123,7 +123,9 @@ mu
 
 
 
-    32.472972972972975
+    (32.472972972972975,
+     array([2.2972973 , 2.97297297, 6.56756757, 2.59459459, 4.        ,
+            5.67567568, 3.17567568, 2.10810811, 3.08108108]))
 
 
 
@@ -316,6 +318,19 @@ plt.show
 
 
 ![png](index_files/index_24_1.png)
+
+
+
+```python
+plt.bar(x = sizes, height = pmf, label = "Actual")
+plt.bar(x = sizes, height = pmf2, label = "Expected")
+plt.title ("My Title");
+plt.legend()
+plt.show()
+```
+
+
+![png](index_files/index_25_0.png)
 
 
 Here is the key. For smaller class sizes, the probability of coming across a students is lower than the actual probability. For larger classes, the probability of coming across a student is much higher than actual probability. This explains why the paradox takes place!
